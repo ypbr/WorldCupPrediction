@@ -46,51 +46,22 @@
     <div class="max-w-7xl mx-auto px-4 py-4">
       <!-- Mobile: single round view -->
       <div class="lg:hidden">
-        <div
+        <template
           v-for="round in rounds"
           :key="round.id"
-          v-show="activeRound === round.id"
         >
-          <h2 class="text-lg font-bold text-white mb-4">{{ round.name }}</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <MatchCard
-              v-for="match in round.matches"
-              :key="match.id"
-              :matchId="match.id"
-              :matchLabel="match.id"
-            />
+          <div v-if="activeRound === round.id">
+            <h2 class="text-lg font-bold text-white mb-4">{{ round.name }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <MatchCard
+                v-for="match in round.matches"
+                :key="match.id"
+                :matchId="match.id"
+                :matchLabel="match.id"
+              />
+            </div>
           </div>
-          <div class="mt-4 flex gap-3">
-            <button
-              v-if="round.id !== 'r32'"
-              @click="prevRound"
-              class="flex-none bg-white/10 hover:bg-white/15 text-white py-3.5 px-5 rounded-2xl font-semibold transition-colors touch-manipulation"
-            >
-              ←
-            </button>
-            <button
-              v-if="round.id !== 'final'"
-              @click="nextRound"
-              class="flex-1 bg-fifa-blue hover:bg-blue-600 text-white py-3.5 rounded-2xl font-bold text-sm transition-colors touch-manipulation"
-            >
-              Next: {{ nextRoundName(round.id) }} →
-            </button>
-            <button
-              v-if="round.id === 'final'"
-              @click="$emit('next')"
-              :disabled="!store.champion"
-              class="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all touch-manipulation"
-              :class="
-                store.champion
-                  ? 'bg-yellow-500 hover:bg-yellow-400 text-gray-900 shadow-lg shadow-yellow-900/40'
-                  : 'bg-white/10 text-gray-500 cursor-not-allowed'
-              "
-            >
-              <span v-if="store.champion">🏆 See my prediction →</span>
-              <span v-else>Pick a Final winner to continue</span>
-            </button>
-          </div>
-        </div>
+        </template>
       </div>
 
       <!-- Desktop: horizontal bracket (scrollable) -->
@@ -135,11 +106,51 @@
       </div>
     </div>
 
-    <!-- Sticky bottom: champion banner when final picked -->
+    <!-- Mobile: fixed bottom round navigation (lg:hidden, z-40 so it sits above champion banner) -->
+    <div class="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-gray-950/95 backdrop-blur border-t border-white/10 px-4 py-3">
+      <div class="flex gap-3">
+        <button
+          v-if="activeRound !== 'r32'"
+          @click="prevRound"
+          class="flex-none bg-white/10 hover:bg-white/15 text-white py-3.5 px-5 rounded-2xl font-semibold transition-colors touch-manipulation"
+        >
+          ←
+        </button>
+        <button
+          v-if="activeRound !== 'final'"
+          @click="currentRoundDone && nextRound()"
+          :disabled="!currentRoundDone"
+          class="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all touch-manipulation"
+          :class="
+            currentRoundDone
+              ? 'bg-fifa-blue hover:bg-blue-600 text-white'
+              : 'bg-white/10 text-gray-500 cursor-not-allowed'
+          "
+        >
+          Next: {{ nextRoundName(activeRound) }} →
+        </button>
+        <button
+          v-if="activeRound === 'final'"
+          @click="$emit('next')"
+          :disabled="!store.champion"
+          class="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all touch-manipulation"
+          :class="
+            store.champion
+              ? 'bg-yellow-500 hover:bg-yellow-400 text-gray-900 shadow-lg shadow-yellow-900/40'
+              : 'bg-white/10 text-gray-500 cursor-not-allowed'
+          "
+        >
+          <span v-if="store.champion">🏆 See my prediction →</span>
+          <span v-else>Pick a Final winner to continue</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sticky bottom: champion banner when final picked (desktop only) -->
     <Transition name="slide-up">
       <div
         v-if="store.champion"
-        class="fixed bottom-0 left-0 right-0 z-30 bg-yellow-500 text-gray-900 px-4 py-3"
+        class="hidden lg:block fixed bottom-0 left-0 right-0 z-30 bg-yellow-500 text-gray-900 px-4 py-3"
       >
         <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -199,6 +210,14 @@ const rounds = [
 ];
 
 const activeRound = ref("r32");
+
+const activeRoundMatches = computed(
+  () => rounds.find((r) => r.id === activeRound.value)?.matches ?? [],
+);
+
+const currentRoundDone = computed(() =>
+  activeRoundMatches.value.every((m) => store.bracketPicks[m.id]),
+);
 
 const championTeam = computed(() =>
   store.champion ? getTeamById(store.champion) : null,
