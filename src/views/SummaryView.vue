@@ -218,7 +218,7 @@ async function copyLink() {
 function shareWhatsApp() {
   const url = getShareUrl();
   const text = encodeURIComponent(
-    `My FIFA 2026 World Cup prediction 🏆 ${championTeam.value?.flag} ${championTeam.value?.name}! Check it out: ${url}`,
+    `My FIFA 2026 World Cup prediction 🏆 ${championTeam.value?.name}! Check it out: ${url}`,
   );
   window.open(`https://wa.me/?text=${text}`, "_blank");
 }
@@ -226,7 +226,7 @@ function shareWhatsApp() {
 function shareTwitter() {
   const url = getShareUrl();
   const text = encodeURIComponent(
-    `My #FIFA2026 World Cup prediction: 🏆 ${championTeam.value?.flag} ${championTeam.value?.name}! Make yours:`,
+    `My #FIFA2026 World Cup prediction: 🏆 ${championTeam.value?.name}! Make yours:`,
   );
   window.open(
     `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`,
