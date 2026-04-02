@@ -125,8 +125,37 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
         </svg>
-        {{ isGeneratingImage ? "Creating image…" : isMobileShare ? "Share to Instagram" : "Download Story Image" }}
+        {{ isGeneratingImage ? "Creating image…" : "Save Story Image" }}
       </button>
+
+      <!-- Instagram instructions modal -->
+      <div
+        v-if="showInstaModal"
+        class="fixed inset-0 z-50 flex items-end justify-center p-4"
+        style="background: rgba(0,0,0,0.7);"
+        @click.self="showInstaModal = false"
+      >
+        <div class="w-full max-w-sm rounded-3xl p-6 space-y-4" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1);">
+          <p class="text-white font-black text-lg text-center">Share to Instagram Stories</p>
+          <p class="text-gray-400 text-sm text-center">Image saved to your device. Now:</p>
+          <ol class="space-y-2 text-sm text-gray-200">
+            <li class="flex items-start gap-2"><span class="text-yellow-400 font-bold">1.</span> Open Instagram</li>
+            <li class="flex items-start gap-2"><span class="text-yellow-400 font-bold">2.</span> Tap the <strong>+</strong> button → <strong>Story</strong></li>
+            <li class="flex items-start gap-2"><span class="text-yellow-400 font-bold">3.</span> Select the prediction image from your gallery</li>
+            <li class="flex items-start gap-2"><span class="text-yellow-400 font-bold">4.</span> Share!</li>
+          </ol>
+          <a
+            href="instagram://"
+            class="block w-full text-center text-white font-bold py-3 rounded-2xl touch-manipulation"
+            style="background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);"
+            @click="showInstaModal = false"
+          >Open Instagram</a>
+          <button
+            @click="showInstaModal = false"
+            class="block w-full text-center text-gray-400 text-sm py-2"
+          >Close</button>
+        </div>
+      </div>
 
       <!-- Twitter/X -->
       <button
@@ -179,7 +208,7 @@ import InstagramStoryCard from "@/components/InstagramStoryCard.vue";
 import { QF_SLOTS, R16_SLOTS, SF_SLOTS } from "@/data/bracket.js";
 import { getTeamById } from "@/data/teams.js";
 import { usePredictionStore } from "@/stores/prediction.js";
-import { canShare, generateStoryImage, shareStoryToInstagram } from "@/utils/imageShare.js";
+import { canShareFiles, downloadStoryImage, generateStoryImage } from "@/utils/imageShare.js";
 import { buildShareUrl } from "@/utils/share.js";
 import { computed, ref } from "vue";
 
@@ -191,8 +220,8 @@ const store = usePredictionStore();
 const copied = ref(false);
 const storyCardRef = ref(null);
 const isGeneratingImage = ref(false);
-const canShareInstagram = computed(() => !props.isShared /* && canShareFiles() — TODO: re-enable before deploy */);
-const isMobileShare = computed(() => canShare());
+const showInstaModal = ref(false);
+const canShareInstagram = computed(() => !props.isShared);
 
 const championTeam = computed(() =>
   store.champion ? getTeamById(store.champion) : null,
@@ -249,9 +278,16 @@ async function shareInstagram() {
   try {
     const el = storyCardRef.value.$el;
     const blob = await generateStoryImage(el);
-    await shareStoryToInstagram(blob, championTeam.value?.name);
+    if (canShareFiles()) {
+      // Try native file share (saves to Photos on iOS, Files on Android)
+      const file = new File([blob], "my-wc2026-prediction.jpg", { type: "image/jpeg" });
+      await navigator.share({ files: [file], title: "FIFA 2026 Prediction" });
+    } else {
+      // Fallback: trigger download
+      downloadStoryImage(blob);
+    }
+    showInstaModal.value = true;
   } catch (err) {
-    // User cancelled or share failed — silently ignore
     if (err?.name !== "AbortError") {
       console.error("Instagram share failed:", err);
     }
