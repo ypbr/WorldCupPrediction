@@ -144,12 +144,11 @@
             <li class="flex items-start gap-2"><span class="text-yellow-400 font-bold">3.</span> Select the prediction image from your gallery</li>
             <li class="flex items-start gap-2"><span class="text-yellow-400 font-bold">4.</span> Share!</li>
           </ol>
-          <a
-            href="instagram://"
+          <button
+            @click="openInstagramStories"
             class="block w-full text-center text-white font-bold py-3 rounded-2xl touch-manipulation"
             style="background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);"
-            @click="showInstaModal = false"
-          >Open Instagram</a>
+          >Open Instagram Stories</button>
           <button
             @click="showInstaModal = false"
             class="block w-full text-center text-gray-400 text-sm py-2"
@@ -329,6 +328,17 @@ function shareTwitter() {
     `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`,
     "_blank",
   );
+}
+
+function openInstagramStories() {
+  showInstaModal.value = false;
+  const isAndroid = /android/i.test(navigator.userAgent);
+  if (isAndroid) {
+    window.location.href =
+      "intent://#Intent;scheme=instagram;package=com.instagram.android;end";
+  } else {
+    window.location.href = "instagram://";
+  }
 }
 
 function confirmReset() {
