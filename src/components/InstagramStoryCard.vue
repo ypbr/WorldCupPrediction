@@ -128,12 +128,13 @@ function getTeam(id) {
   flex-direction: column;
   align-items: center;
   padding-top: 36px;
-  gap: 4px;
+  gap: 0;
 }
 
 .ig-trophy {
   font-size: 40px;
   line-height: 1;
+  margin-bottom: 10px;
 }
 
 .ig-title {
@@ -231,13 +232,17 @@ function getTeam(id) {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 4px 8px;
+  line-height: 1;
 }
 
 .ig-chip-flag {
   width: 20px;
-  height: auto;
+  height: 14px;
   border-radius: 2px;
   display: block;
+  object-fit: cover;
+  flex-shrink: 0;
+  vertical-align: middle;
 }
 
 .ig-chip-name {
@@ -245,6 +250,7 @@ function getTeam(id) {
   font-weight: 600;
   color: #e2e8f0;
   white-space: nowrap;
+  line-height: 1;
 }
 
 /* ── Footer ──────────────────────────────────────────── */
