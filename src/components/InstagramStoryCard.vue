@@ -244,6 +244,8 @@ function getTeam(id) {
   border-radius: 2px;
   overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .ig-chip-flag {
@@ -251,6 +253,7 @@ function getTeam(id) {
   height: 100%;
   object-fit: cover;
   display: block;
+  vertical-align: middle;
 }
 
 .ig-chip-name {
@@ -258,7 +261,7 @@ function getTeam(id) {
   font-weight: 600;
   color: #e2e8f0;
   white-space: nowrap;
-  line-height: 16px;
+  line-height: 1;
 }
 
 /* ── Footer ──────────────────────────────────────────── */
