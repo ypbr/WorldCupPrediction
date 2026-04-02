@@ -179,7 +179,7 @@ import InstagramStoryCard from "@/components/InstagramStoryCard.vue";
 import { QF_SLOTS, R16_SLOTS, SF_SLOTS } from "@/data/bracket.js";
 import { getTeamById } from "@/data/teams.js";
 import { usePredictionStore } from "@/stores/prediction.js";
-import { canShareFiles, generateStoryImage, shareStoryToInstagram } from "@/utils/imageShare.js";
+import { canShare, generateStoryImage, shareStoryToInstagram } from "@/utils/imageShare.js";
 import { buildShareUrl } from "@/utils/share.js";
 import { computed, ref } from "vue";
 
@@ -192,7 +192,7 @@ const copied = ref(false);
 const storyCardRef = ref(null);
 const isGeneratingImage = ref(false);
 const canShareInstagram = computed(() => !props.isShared /* && canShareFiles() — TODO: re-enable before deploy */);
-const isMobileShare = computed(() => canShareFiles());
+const isMobileShare = computed(() => canShare());
 
 const championTeam = computed(() =>
   store.champion ? getTeamById(store.champion) : null,
