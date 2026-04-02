@@ -38,13 +38,15 @@
           :key="teamId"
           class="ig-team-chip"
         >
-          <img
-            v-if="getTeam(teamId)"
-            :src="`https://flagcdn.com/w40/${getTeam(teamId).iso2}.png`"
-            :alt="getTeam(teamId).name"
-            class="ig-chip-flag"
-            crossorigin="anonymous"
-          />
+          <div class="ig-chip-flag-wrap">
+            <img
+              v-if="getTeam(teamId)"
+              :src="`https://flagcdn.com/w40/${getTeam(teamId).iso2}.png`"
+              :alt="getTeam(teamId).name"
+              class="ig-chip-flag"
+              crossorigin="anonymous"
+            />
+          </div>
           <span class="ig-chip-name">{{ getTeam(teamId)?.name }}</span>
         </div>
       </div>
@@ -59,13 +61,15 @@
           :key="teamId"
           class="ig-team-chip"
         >
-          <img
-            v-if="getTeam(teamId)"
-            :src="`https://flagcdn.com/w40/${getTeam(teamId).iso2}.png`"
-            :alt="getTeam(teamId).name"
-            class="ig-chip-flag"
-            crossorigin="anonymous"
-          />
+          <div class="ig-chip-flag-wrap">
+            <img
+              v-if="getTeam(teamId)"
+              :src="`https://flagcdn.com/w40/${getTeam(teamId).iso2}.png`"
+              :alt="getTeam(teamId).name"
+              class="ig-chip-flag"
+              crossorigin="anonymous"
+            />
+          </div>
           <span class="ig-chip-name">{{ getTeam(teamId)?.name }}</span>
         </div>
       </div>
@@ -228,21 +232,25 @@ function getTeam(id) {
 .ig-team-chip {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 4px 8px;
-  line-height: 1;
+  padding: 5px 8px;
+}
+
+.ig-chip-flag-wrap {
+  width: 24px;
+  height: 16px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .ig-chip-flag {
-  width: 20px;
-  height: 14px;
-  border-radius: 2px;
-  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  flex-shrink: 0;
-  vertical-align: middle;
+  display: block;
 }
 
 .ig-chip-name {
@@ -250,7 +258,7 @@ function getTeam(id) {
   font-weight: 600;
   color: #e2e8f0;
   white-space: nowrap;
-  line-height: 1;
+  line-height: 16px;
 }
 
 /* ── Footer ──────────────────────────────────────────── */
