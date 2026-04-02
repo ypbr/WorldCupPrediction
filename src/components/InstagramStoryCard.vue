@@ -226,30 +226,31 @@ function getTeam(id) {
 }
 
 .ig-team-chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 0 8px;
-  height: 26px;
+  padding: 5px 8px;
+  white-space: nowrap;
+  font-size: 0;
 }
 
 .ig-chip-flag {
   width: 24px;
   height: 16px;
   object-fit: cover;
-  display: block;
+  display: inline-block;
+  vertical-align: middle;
   border-radius: 2px;
-  flex-shrink: 0;
+  margin-right: 6px;
 }
 
 .ig-chip-name {
   font-size: 11px;
   font-weight: 600;
   color: #e2e8f0;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 16px;
   white-space: nowrap;
-  line-height: 26px;
 }
 
 /* ── Footer ──────────────────────────────────────────── */
