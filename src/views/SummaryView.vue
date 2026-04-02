@@ -58,6 +58,14 @@
       </div>
     </div>
 
+    <!-- Off-screen Instagram story card (captured by html2canvas) -->
+    <InstagramStoryCard
+      ref="storyCardRef"
+      :champion="store.champion"
+      :finalists="storyFinalists"
+      :semifinalists="storySemifinalists"
+    />
+
     <!-- Share section (only when viewing own prediction) -->
     <div v-if="!isShared" class="w-full max-w-sm space-y-3">
       <p class="text-center text-sm text-gray-400 font-medium">
@@ -99,6 +107,25 @@
           />
         </svg>
         Share via WhatsApp
+      </button>
+
+      <!-- Instagram Story -->
+      <button
+        v-if="canShareInstagram"
+        @click="shareInstagram"
+        :disabled="isGeneratingImage"
+        class="w-full text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 transition-opacity touch-manipulation"
+        style="background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); opacity: 1;"
+        :style="isGeneratingImage ? 'opacity:0.6; cursor:not-allowed' : ''"
+      >
+        <svg v-if="!isGeneratingImage" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        <svg v-else class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+        </svg>
+        {{ isGeneratingImage ? "Creating image…" : isMobileShare ? "Share to Instagram" : "Download Story Image" }}
       </button>
 
       <!-- Twitter/X -->
@@ -147,12 +174,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { usePredictionStore } from "@/stores/prediction.js";
-import { getTeamById } from "@/data/teams.js";
-import { buildShareUrl } from "@/utils/share.js";
-import { R16_SLOTS, QF_SLOTS, SF_SLOTS } from "@/data/bracket.js";
 import FlagImg from "@/components/FlagImg.vue";
+import InstagramStoryCard from "@/components/InstagramStoryCard.vue";
+import { QF_SLOTS, R16_SLOTS, SF_SLOTS } from "@/data/bracket.js";
+import { getTeamById } from "@/data/teams.js";
+import { usePredictionStore } from "@/stores/prediction.js";
+import { canShareFiles, generateStoryImage, shareStoryToInstagram } from "@/utils/imageShare.js";
+import { buildShareUrl } from "@/utils/share.js";
+import { computed, ref } from "vue";
 
 const emit = defineEmits(["back", "reset", "make-own"]);
 const props = defineProps({
@@ -160,6 +189,10 @@ const props = defineProps({
 });
 const store = usePredictionStore();
 const copied = ref(false);
+const storyCardRef = ref(null);
+const isGeneratingImage = ref(false);
+const canShareInstagram = computed(() => !props.isShared /* && canShareFiles() — TODO: re-enable before deploy */);
+const isMobileShare = computed(() => canShareFiles());
 
 const championTeam = computed(() =>
   store.champion ? getTeamById(store.champion) : null,
@@ -198,6 +231,34 @@ const summaryRounds = computed(() => {
     ...(sfWinners.length ? [{ label: "🏅 Finalists", teams: sfWinners }] : []),
   ];
 });
+
+// Data for the Instagram story card
+const storyFinalists = computed(() => {
+  const picks = store.bracketPicks;
+  return SF_SLOTS.map((m) => picks[m.id]).filter(Boolean);
+});
+
+const storySemifinalists = computed(() => {
+  const picks = store.bracketPicks;
+  return QF_SLOTS.map((m) => picks[m.id]).filter(Boolean);
+});
+
+async function shareInstagram() {
+  if (!storyCardRef.value) return;
+  isGeneratingImage.value = true;
+  try {
+    const el = storyCardRef.value.$el;
+    const blob = await generateStoryImage(el);
+    await shareStoryToInstagram(blob, championTeam.value?.name);
+  } catch (err) {
+    // User cancelled or share failed — silently ignore
+    if (err?.name !== "AbortError") {
+      console.error("Instagram share failed:", err);
+    }
+  } finally {
+    isGeneratingImage.value = false;
+  }
+}
 
 function getShareUrl() {
   const encoded = store.getSharePayload();
