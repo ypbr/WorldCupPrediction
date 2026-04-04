@@ -183,6 +183,16 @@
       </button>
     </div>
 
+    <!-- Global stats link (always visible) -->
+    <div class="w-full max-w-sm mt-4">
+      <button
+        @click="$emit('stats')"
+        class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-semibold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors touch-manipulation"
+      >
+        📊 View Global Statistics
+      </button>
+    </div>
+
     <!-- Restart + back (only when viewing own prediction) (only when viewing own prediction) -->
     <div v-if="!isShared" class="w-full max-w-sm mt-6 flex gap-3">
       <button
@@ -209,9 +219,10 @@ import { getTeamById } from "@/data/teams.js";
 import { usePredictionStore } from "@/stores/prediction.js";
 import { canShareFiles, downloadStoryImage, generateStoryImage } from "@/utils/imageShare.js";
 import { buildShareUrl } from "@/utils/share.js";
-import { computed, ref } from "vue";
+import { submitPrediction } from "@/utils/stats.js";
+import { computed, onMounted, ref } from "vue";
 
-const emit = defineEmits(["back", "reset", "make-own"]);
+const emit = defineEmits(["back", "reset", "make-own", "stats"]);
 const props = defineProps({
   isShared: { type: Boolean, default: false },
 });
@@ -221,6 +232,12 @@ const storyCardRef = ref(null);
 const isGeneratingImage = ref(false);
 const showInstaModal = ref(false);
 const canShareInstagram = computed(() => !props.isShared);
+
+onMounted(() => {
+  if (!props.isShared && store.champion) {
+    submitPrediction(store)
+  }
+})
 
 const championTeam = computed(() =>
   store.champion ? getTeamById(store.champion) : null,

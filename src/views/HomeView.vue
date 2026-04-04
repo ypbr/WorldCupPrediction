@@ -65,6 +65,14 @@
       Continue saved prediction
     </button>
 
+    <!-- Stats link -->
+    <button
+      @click="$emit('stats')"
+      class="mt-3 text-sm text-gray-600 hover:text-gray-400 transition-colors touch-manipulation flex items-center gap-1.5"
+    >
+      <span>📊</span> View Global Statistics
+    </button>
+
     <p class="mt-8 text-xs text-gray-700">USA · Canada · Mexico · June–July 2026</p>
   </div>
 </template>
@@ -73,7 +81,7 @@
 defineProps({
   hasSavedState: { type: Boolean, default: false },
 })
-defineEmits(['start', 'resume'])
+defineEmits(['start', 'resume', 'stats'])
 
 const steps = [
   { title: 'Rank all 12 groups', desc: 'Tap teams in order of finish (1st to 4th)' },
