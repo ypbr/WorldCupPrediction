@@ -1,27 +1,23 @@
 import { FINAL_SLOT, QF_SLOTS, R16_SLOTS, R32_SLOTS, SF_SLOTS } from '@/data/bracket.js'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY,
-)
-
-const SUBMITTED_HASH_KEY = 'wc2026_submitted_hash'
+import { getCurrentUser } from './auth.js'
+import { supabase } from './supabaseClient.js'
 
 /**
- * Submits the current prediction to Supabase as an anonymous data point.
- * Silently skips if already submitted (deduplication via localStorage + DB unique constraint).
- * Fire-and-forget — does not throw.
+ * Submits or updates the current prediction in Supabase.
+ * Each user has exactly one submission (keyed by user_id).
+ * If the user already has a submission, team appearances are replaced and hash is updated.
+ * Fire-and-forget — does not throw. Returns 'saved' | 'updated' | 'skipped' | 'error'.
  *
  * @param {import('@/stores/prediction.js').PredictionStore} store
+ * @returns {Promise<'saved'|'updated'|'skipped'|'error'>}
  */
 export async function submitPrediction(store) {
     try {
-        const hash = store.getSharePayload()
-        if (!hash) return
+        const user = getCurrentUser()
+        if (!user) return 'skipped'
 
-        // Skip if already submitted this exact prediction
-        if (localStorage.getItem(SUBMITTED_HASH_KEY) === hash) return
+        const hash = store.getSharePayload()
+        if (!hash) return 'skipped'
 
         const picks = store.bracketPicks
         const r32Matchups = store.r32Matchups
@@ -63,35 +59,59 @@ export async function submitPrediction(store) {
         const champion = picks[FINAL_SLOT.id]
         if (champion) appearances.push({ team_id: champion, round: 'champion' })
 
-        if (appearances.length === 0) return
+        if (appearances.length === 0) return 'skipped'
 
-        // Generate UUID client-side to avoid needing SELECT on submissions
-        const submissionId = crypto.randomUUID()
-
-        // Insert submission row (unique constraint on hash handles duplicates silently)
-        const { error: subError } = await supabase
+        // Check if user already has a submission
+        const { data: existing, error: selectError } = await supabase
             .from('submissions')
-            .insert({ id: submissionId, hash })
+            .select('id, hash')
+            .eq('user_id', user.id)
+            .maybeSingle()
 
-        if (subError) {
-            // 23505 = unique_violation — already submitted from another device/browser
-            if (subError.code === '23505') {
-                localStorage.setItem(SUBMITTED_HASH_KEY, hash)
-                return
-            }
-            throw subError
+        if (selectError) throw selectError
+
+        let submissionId
+        let action
+
+        if (existing) {
+            // Same prediction — nothing to update
+            if (existing.hash === hash) return 'skipped'
+
+            submissionId = existing.id
+            action = 'updated'
+
+            // Replace team appearances for this submission
+            const { error: deleteError } = await supabase
+                .from('team_appearances')
+                .delete()
+                .eq('submission_id', submissionId)
+            if (deleteError) throw deleteError
+
+            const { error: updateError } = await supabase
+                .from('submissions')
+                .update({ hash })
+                .eq('id', submissionId)
+            if (updateError) throw updateError
+        } else {
+            submissionId = crypto.randomUUID()
+            action = 'saved'
+
+            const { error: insertError } = await supabase
+                .from('submissions')
+                .insert({ id: submissionId, hash, user_id: user.id })
+            if (insertError) throw insertError
         }
 
-        // Batch insert team appearances
+        // Batch insert new team appearances
         const rows = appearances.map((a) => ({ ...a, submission_id: submissionId }))
         const { error: appError } = await supabase.from('team_appearances').insert(rows)
         if (appError) throw appError
 
-        // Mark as submitted locally
-        localStorage.setItem(SUBMITTED_HASH_KEY, hash)
+        return action
     } catch (err) {
         // Non-blocking — stats failure must never break the user flow
         console.warn('[stats] submitPrediction failed:', err)
+        return 'error'
     }
 }
 

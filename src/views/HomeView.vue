@@ -74,6 +74,13 @@
     </button>
 
     <p class="mt-8 text-xs text-gray-700">USA · Canada · Mexico · June–July 2026</p>
+
+    <button
+      @click="$emit('privacy')"
+      class="mt-2 text-xs text-gray-700 hover:text-gray-500 transition-colors touch-manipulation"
+    >
+      Privacy Policy
+    </button>
   </div>
 </template>
 
@@ -81,7 +88,7 @@
 defineProps({
   hasSavedState: { type: Boolean, default: false },
 })
-defineEmits(['start', 'resume', 'stats'])
+defineEmits(['start', 'resume', 'stats', 'privacy'])
 
 const steps = [
   { title: 'Rank all 12 groups', desc: 'Tap teams in order of finish (1st to 4th)' },

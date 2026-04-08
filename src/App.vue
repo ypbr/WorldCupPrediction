@@ -11,19 +11,21 @@
     @home="goToStep('home')"
     @make-own="makeOwnPrediction"
     @stats="goToStats"
+    @privacy="goToStep('privacy')"
   />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
 import { usePredictionStore } from "@/stores/prediction.js";
-import HomeView from "@/views/HomeView.vue";
-import GroupsView from "@/views/GroupsView.vue";
-import ThirdPlaceView from "@/views/ThirdPlaceView.vue";
+import { initAuth } from "@/utils/auth.js";
 import BracketView from "@/views/BracketView.vue";
-import SummaryView from "@/views/SummaryView.vue";
+import GroupsView from "@/views/GroupsView.vue";
+import HomeView from "@/views/HomeView.vue";
+import PrivacyView from "@/views/PrivacyView.vue";
 import StatsView from "@/views/StatsView.vue";
-import { decodeState } from "@/utils/share.js";
+import SummaryView from "@/views/SummaryView.vue";
+import ThirdPlaceView from "@/views/ThirdPlaceView.vue";
+import { computed, onMounted, ref } from "vue";
 
 const store = usePredictionStore();
 const step = ref("home");
@@ -40,6 +42,7 @@ const viewMap = {
   bracket: BracketView,
   summary: SummaryView,
   stats: StatsView,
+  privacy: PrivacyView,
 };
 
 const currentView = computed(() => viewMap[step.value]);
@@ -67,6 +70,8 @@ function prevStep() {
 function handleBack() {
   if (step.value === "stats") {
     goToStep(statsReturnStep.value);
+  } else if (step.value === "privacy") {
+    goToStep("home");
   } else {
     prevStep();
   }
@@ -96,7 +101,10 @@ function makeOwnPrediction() {
   goToStep("home");
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // Initialize auth session first (anonymous sign-in if no existing session)
+  await initAuth();
+
   // Check URL for shared prediction
   const params = new URLSearchParams(window.location.search);
   const encoded = params.get("p");
