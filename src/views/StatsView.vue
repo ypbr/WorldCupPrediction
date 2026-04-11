@@ -35,7 +35,7 @@
           :class="[
             'flex-1 min-w-0 px-2 py-2 rounded-xl text-xs font-bold text-center transition-colors touch-manipulation',
             activeRound === tab.round
-              ? 'bg-fifa-blue text-white'
+              ? 'bg-wc-blue text-white'
               : 'bg-white/10 text-gray-400 hover:bg-white/20',
           ]"
         >
@@ -62,7 +62,7 @@
       >
         <p class="text-3xl mb-3">⚠️</p>
         <p class="text-sm">Could not load stats.</p>
-        <button @click="loadStats" class="mt-4 text-xs text-fifa-blue underline">Retry</button>
+        <button @click="loadStats" class="mt-4 text-xs text-wc-blue underline">Retry</button>
       </div>
 
       <!-- Empty -->
@@ -102,7 +102,7 @@
             </p>
             <div class="mt-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div
-                class="h-full rounded-full bg-fifa-blue transition-all duration-500"
+                class="h-full rounded-full bg-wc-blue transition-all duration-500"
                 :style="{ width: pct(row.count) + '%' }"
               />
             </div>

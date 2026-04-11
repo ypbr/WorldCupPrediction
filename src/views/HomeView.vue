@@ -5,8 +5,8 @@
     <div class="mb-8">
       <p class="text-5xl mb-4">⚽</p>
       <h1 class="text-4xl sm:text-5xl font-black text-white leading-tight mb-2">
-        FIFA 2026<br/>
-        <span class="text-fifa-gold">World Cup</span>
+        World Cup<br/>
+        <span class="text-wc-gold">2026</span>
       </h1>
       <p class="text-xl font-semibold text-white mt-1">Predictor</p>
     </div>
@@ -38,7 +38,7 @@
     <!-- Steps -->
     <div class="w-full max-w-xs mb-10 space-y-3 text-left">
       <div v-for="(step, i) in steps" :key="i" class="flex items-start gap-3">
-        <div class="shrink-0 w-7 h-7 rounded-full bg-fifa-blue/30 border border-fifa-blue/50 flex items-center justify-center text-xs font-bold text-blue-300">
+        <div class="shrink-0 w-7 h-7 rounded-full bg-wc-blue/30 border border-wc-blue/50 flex items-center justify-center text-xs font-bold text-blue-300">
           {{ i + 1 }}
         </div>
         <div>
@@ -51,7 +51,7 @@
     <!-- CTA -->
     <button
       @click="$emit('start')"
-      class="w-full max-w-xs bg-fifa-blue hover:bg-blue-600 active:bg-blue-700 text-white font-bold text-lg py-5 rounded-2xl shadow-lg shadow-blue-900/40 transition-all duration-150 touch-manipulation active:scale-[0.98]"
+      class="w-full max-w-xs bg-wc-blue hover:bg-blue-600 active:bg-blue-700 text-white font-bold text-lg py-5 rounded-2xl shadow-lg shadow-blue-900/40 transition-all duration-150 touch-manipulation active:scale-[0.98]"
     >
       Start Predicting →
     </button>

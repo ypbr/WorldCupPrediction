@@ -1,4 +1,4 @@
-# FIFA 2026 World Cup Prediction — Copilot Instructions
+# 2026 World Cup Prediction — Copilot Instructions
 
 See [README.md](../README.md) for project overview, features, and setup commands.
 
@@ -39,7 +39,7 @@ Navigation uses Vue events (`@start`, `@resume`, `@next`, `@back`, `@reset`, `@m
 
 **Pinia store:** Composition-style — `ref()` for state, `computed()` for derived values, plain functions for actions. Every mutation calls `persist()` which saves to `localStorage` key `wc2026_prediction`.
 
-**Tailwind:** Custom FIFA-themed colors defined in `tailwind.config.js`: `fifa-blue`, `fifa-red`, `fifa-gold`, `fifa-silver`, `fifa-dark`, `fifa-card`. Dark theme only — no light mode.
+**Tailwind:** Custom themed colors defined in `tailwind.config.js`: `wc-blue`, `wc-red`, `wc-gold`, `wc-silver`, `wc-dark`, `wc-card`. Dark theme only — no light mode.
 
 **Bracket slot notation:** Slot strings encode team sources:
 

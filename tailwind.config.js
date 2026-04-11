@@ -7,7 +7,7 @@ export default {
     theme: {
         extend: {
             colors: {
-                fifa: {
+                wc: {
                     blue: '#003f7f',
                     red: '#e30613',
                     gold: '#f5a623',

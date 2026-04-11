@@ -1,4 +1,4 @@
-package dev.ypbr.fifawc2026;
+package dev.ypbr.wc2026;
 
 import com.getcapacitor.BridgeActivity;
 

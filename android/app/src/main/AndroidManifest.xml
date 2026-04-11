@@ -27,7 +27,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="dev.ypbr.fifawc2026" />
+                <data android:scheme="dev.ypbr.wc2026" />
             </intent-filter>
 
         </activity>

@@ -1,4 +1,4 @@
-// FIFA 2026 World Cup - All 48 teams organized by group
+// World Cup 2026 - All 48 teams organized by group
 // Each team: { id, name, iso2, group, confederation }
 // iso2: ISO 3166-1 alpha-2 lowercase code used by flagcdn.com
 

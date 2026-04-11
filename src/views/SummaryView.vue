@@ -9,7 +9,7 @@
       Your Prediction
     </h1>
 
-    <p class="text-gray-400 text-sm mb-8 text-center">FIFA 2026 World Cup</p>
+    <p class="text-gray-400 text-sm mb-8 text-center">World Cup 2026</p>
 
     <!-- Champion card -->
     <div

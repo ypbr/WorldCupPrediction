@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "dev.ypbr.fifawc2026"
+    namespace = "dev.ypbr.wc2026"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "dev.ypbr.fifawc2026"
+        applicationId "dev.ypbr.wc2026"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

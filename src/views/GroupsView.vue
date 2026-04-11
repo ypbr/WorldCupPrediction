@@ -46,7 +46,7 @@
           class="w-full py-4 rounded-2xl font-bold text-base transition-all duration-200 touch-manipulation"
           :class="
             store.allGroupsDone
-              ? 'bg-fifa-blue text-white hover:bg-blue-600 active:bg-blue-700 shadow-lg shadow-blue-900/40'
+              ? 'bg-wc-blue text-white hover:bg-blue-600 active:bg-blue-700 shadow-lg shadow-blue-900/40'
               : 'bg-white/10 text-gray-500 cursor-not-allowed'
           "
         >
@@ -65,9 +65,9 @@
 </template>
 
 <script setup>
+import GroupCard from "@/components/GroupCard.vue";
 import { GROUPS } from "@/data/teams.js";
 import { usePredictionStore } from "@/stores/prediction.js";
-import GroupCard from "@/components/GroupCard.vue";
 
 defineEmits(["next"]);
 const store = usePredictionStore();

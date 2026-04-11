@@ -133,7 +133,7 @@ export async function signInWithGoogle() {
 function getOAuthRedirectUrl() {
     // Capacitor injects window.Capacitor when running as native app
     if (typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.()) {
-        return 'dev.ypbr.fifawc2026://auth/callback'
+        return 'dev.ypbr.wc2026://auth/callback'
     }
     return window.location.origin
 }

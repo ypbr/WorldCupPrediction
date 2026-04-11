@@ -17,7 +17,7 @@
 
       <!-- Intro -->
       <p>
-        FIFA 2026 World Cup Predictor ("the App") is operated by ypbr.dev. This Privacy Policy
+        World Cup 2026 Predictor ("the App") is operated by ypbr.dev. This Privacy Policy
         explains what information we collect, how we use it, and your choices regarding your data.
         By using the App, you agree to the practices described here.
       </p>
@@ -112,7 +112,7 @@
         <h2 class="text-base font-bold text-white mb-3">5. Data Retention</h2>
         <p>
           Anonymous session data and prediction picks are retained for the duration of the
-          FIFA 2026 World Cup period and may be deleted afterward. If you linked a Google
+          World Cup 2026 period and may be deleted afterward. If you linked a Google
           account, you may request deletion of your data by contacting us at the address below.
         </p>
       </section>

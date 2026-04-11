@@ -33,7 +33,7 @@
           class="shrink-0 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors touch-manipulation"
           :class="
             activeRound === round.id
-              ? 'bg-fifa-blue text-white'
+              ? 'bg-wc-blue text-white'
               : 'bg-white/10 text-gray-400 hover:bg-white/15'
           "
         >
@@ -123,7 +123,7 @@
           class="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all touch-manipulation"
           :class="
             currentRoundDone
-              ? 'bg-fifa-blue hover:bg-blue-600 text-white'
+              ? 'bg-wc-blue hover:bg-blue-600 text-white'
               : 'bg-white/10 text-gray-500 cursor-not-allowed'
           "
         >
@@ -185,18 +185,18 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { usePredictionStore } from "@/stores/prediction.js";
-import { getTeamById } from "@/data/teams.js";
-import {
-  R32_SLOTS,
-  R16_SLOTS,
-  QF_SLOTS,
-  SF_SLOTS,
-  FINAL_SLOT,
-} from "@/data/bracket.js";
-import MatchCard from "@/components/MatchCard.vue";
 import FlagImg from "@/components/FlagImg.vue";
+import MatchCard from "@/components/MatchCard.vue";
+import {
+    FINAL_SLOT,
+    QF_SLOTS,
+    R16_SLOTS,
+    R32_SLOTS,
+    SF_SLOTS,
+} from "@/data/bracket.js";
+import { getTeamById } from "@/data/teams.js";
+import { usePredictionStore } from "@/stores/prediction.js";
+import { computed, ref } from "vue";
 
 defineEmits(["next", "back"]);
 const store = usePredictionStore();
