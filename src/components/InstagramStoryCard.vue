@@ -10,7 +10,7 @@
     <!-- Top branding -->
     <div class="ig-top">
       <div class="ig-trophy">🏆</div>
-      <div class="ig-title">FIFA 2026 World Cup</div>
+      <div class="ig-title">World Cup 2026</div>
       <div class="ig-subtitle">My Prediction</div>
     </div>
 
@@ -73,7 +73,7 @@
 
     <!-- App link -->
     <div class="ig-footer">
-      <span class="ig-footer-url">fifawc2026.ypbr.dev</span>
+      <span class="ig-footer-url">wc2026.ypbr.dev</span>
     </div>
   </div>
 </template>

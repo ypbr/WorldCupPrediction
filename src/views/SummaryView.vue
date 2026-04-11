@@ -9,7 +9,7 @@
       Your Prediction
     </h1>
 
-    <p class="text-gray-400 text-sm mb-8 text-center">FIFA 2026 World Cup</p>
+    <p class="text-gray-400 text-sm mb-8 text-center">World Cup 2026</p>
 
     <!-- Champion card -->
     <div
@@ -66,32 +66,71 @@
       :semifinalists="storySemifinalists"
     />
 
+    <!-- Save status banner (only when viewing own prediction) -->
+    <div v-if="!isShared && submitStatus !== 'idle'" class="w-full max-w-sm mb-4">
+      <div
+        v-if="submitStatus === 'saving'"
+        class="flex items-center justify-center gap-2 text-gray-400 text-sm py-2"
+      >
+        <svg class="w-4 h-4 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+        </svg>
+        Saving prediction…
+      </div>
+      <div
+        v-else-if="submitStatus === 'saved'"
+        class="flex items-center justify-center gap-2 text-green-400 text-sm bg-green-950/50 border border-green-500/30 rounded-xl py-2 px-4"
+      >
+        ✓ Prediction saved!
+      </div>
+      <div
+        v-else-if="submitStatus === 'updated'"
+        class="flex items-center justify-center gap-2 text-blue-400 text-sm bg-blue-950/50 border border-blue-500/30 rounded-xl py-2 px-4"
+      >
+        ✓ Prediction updated!
+      </div>
+      <div
+        v-else-if="submitStatus === 'error'"
+        class="flex items-center justify-center gap-2 text-red-400 text-sm bg-red-950/50 border border-red-500/30 rounded-xl py-2 px-4"
+      >
+        ⚠ Could not save prediction
+      </div>
+    </div>
+
+    <!-- Google account linking CTA (shown when logged in anonymously) -->
+    <div
+      v-if="!isShared && isAnon"
+      class="w-full max-w-sm mb-4 bg-gray-900/80 border border-white/10 rounded-2xl px-4 py-3"
+    >
+      <p class="text-xs text-gray-400 mb-2 text-center">
+        🔒 Sync your prediction across devices
+      </p>
+      <button
+        @click="handleLinkGoogle"
+        :disabled="isLinking"
+        class="w-full flex items-center justify-center gap-2 bg-white text-gray-900 font-bold py-2.5 rounded-xl text-sm transition-opacity touch-manipulation"
+        :class="isLinking ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90'"
+      >
+        <svg v-if="!isLinking" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        <svg v-else class="w-4 h-4 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+        </svg>
+        {{ isLinking ? 'Redirecting…' : 'Continue with Google' }}
+      </button>
+    </div>
+
     <!-- Share section (only when viewing own prediction) -->
     <div v-if="!isShared" class="w-full max-w-sm space-y-3">
       <p class="text-center text-sm text-gray-400 font-medium">
         Share your prediction
       </p>
-
-      <!-- Copy link -->
-      <button
-        @click="copyLink"
-        class="w-full btn-primary flex items-center justify-center gap-2 py-4 rounded-2xl"
-      >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-          />
-        </svg>
-        {{ copied ? "✓ Copied!" : "Copy Prediction Link" }}
-      </button>
 
       <!-- WhatsApp -->
       <button
@@ -125,10 +164,10 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
         </svg>
-        {{ isGeneratingImage ? "Creating image…" : "Save Story Image" }}
+        {{ isGeneratingImage ? "Creating image…" : isNative ? "Share to Instagram" : "Save Story Image" }}
       </button>
 
-      <!-- Instagram instructions modal -->
+      <!-- Instagram instructions modal (web only) -->
       <div
         v-if="showInstaModal"
         class="fixed inset-0 z-50 flex items-end justify-center p-4"
@@ -193,19 +232,13 @@
       </button>
     </div>
 
-    <!-- Restart + back (only when viewing own prediction) (only when viewing own prediction) -->
-    <div v-if="!isShared" class="w-full max-w-sm mt-6 flex gap-3">
+    <!-- Back to edit (only when viewing own prediction) -->
+    <div v-if="!isShared" class="w-full max-w-sm mt-6">
       <button
         @click="$emit('back')"
-        class="flex-none btn-ghost px-5 py-3 rounded-2xl"
+        class="w-full btn-ghost px-5 py-3 rounded-2xl"
       >
-        ← Edit
-      </button>
-      <button
-        @click="confirmReset"
-        class="flex-1 btn-ghost py-3 rounded-2xl text-red-400 hover:text-red-300"
-      >
-        Start Over
+        ← Edit Prediction
       </button>
     </div>
   </div>
@@ -217,6 +250,7 @@ import InstagramStoryCard from "@/components/InstagramStoryCard.vue";
 import { QF_SLOTS, R16_SLOTS, SF_SLOTS } from "@/data/bracket.js";
 import { getTeamById } from "@/data/teams.js";
 import { usePredictionStore } from "@/stores/prediction.js";
+import { isAnonymousUser, linkGoogleAccount } from "@/utils/auth.js";
 import { canShareFiles, downloadStoryImage, generateStoryImage } from "@/utils/imageShare.js";
 import { buildShareUrl } from "@/utils/share.js";
 import { submitPrediction } from "@/utils/stats.js";
@@ -227,17 +261,39 @@ const props = defineProps({
   isShared: { type: Boolean, default: false },
 });
 const store = usePredictionStore();
-const copied = ref(false);
 const storyCardRef = ref(null);
 const isGeneratingImage = ref(false);
 const showInstaModal = ref(false);
 const canShareInstagram = computed(() => !props.isShared);
+const isNative = typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.() === true;
 
-onMounted(() => {
+// 'idle' | 'saving' | 'saved' | 'updated' | 'error'
+const submitStatus = ref('idle');
+const isLinking = ref(false);
+const isAnon = computed(() => isAnonymousUser());
+
+onMounted(async () => {
   if (!props.isShared && store.champion) {
-    submitPrediction(store)
+    submitStatus.value = 'saving';
+    const result = await submitPrediction(store);
+    if (result === 'saved') submitStatus.value = 'saved';
+    else if (result === 'updated') submitStatus.value = 'updated';
+    else if (result === 'error') submitStatus.value = 'error';
+    else submitStatus.value = 'idle';
   }
-})
+});
+
+async function handleLinkGoogle() {
+  isLinking.value = true;
+  try {
+    await linkGoogleAccount();
+    // On web the page will redirect; on Capacitor the deep link handler completes the flow
+  } catch (err) {
+    console.warn('[summary] Google link failed:', err);
+  } finally {
+    isLinking.value = false;
+  }
+}
 
 const championTeam = computed(() =>
   store.champion ? getTeamById(store.champion) : null,
@@ -295,14 +351,16 @@ async function shareInstagram() {
     const el = storyCardRef.value.$el;
     const blob = await generateStoryImage(el);
     if (canShareFiles()) {
-      // Try native file share (saves to Photos on iOS, Files on Android)
+      // Native share sheet — user can pick Instagram directly from the OS picker
       const file = new File([blob], "my-wc2026-prediction.jpg", { type: "image/jpeg" });
-      await navigator.share({ files: [file], title: "FIFA 2026 Prediction" });
+      await navigator.share({ files: [file], title: "WorldCup 2026 Prediction" });
+      // On native the OS handles everything; only show manual steps on web
+      if (!isNative) showInstaModal.value = true;
     } else {
-      // Fallback: trigger download
+      // Web fallback: download image, then show manual instructions
       downloadStoryImage(blob);
+      showInstaModal.value = true;
     }
-    showInstaModal.value = true;
   } catch (err) {
     if (err?.name !== "AbortError") {
       console.error("Instagram share failed:", err);
@@ -312,34 +370,18 @@ async function shareInstagram() {
   }
 }
 
-function getShareUrl() {
-  const encoded = store.getSharePayload();
-  return buildShareUrl(encoded);
-}
-
-async function copyLink() {
-  const url = getShareUrl();
-  try {
-    await navigator.clipboard.writeText(url);
-    copied.value = true;
-    setTimeout(() => (copied.value = false), 2500);
-  } catch {
-    prompt("Copy this link:", url);
-  }
-}
-
 function shareWhatsApp() {
-  const url = getShareUrl();
+  const url = buildShareUrl(store.getSharePayload());
   const text = encodeURIComponent(
-    `My FIFA 2026 World Cup prediction 🏆 ${championTeam.value?.name}! Check it out: ${url}`,
+    `My 2026 World Cup prediction 🏆 ${championTeam.value?.name}! Check it out: ${url}`,
   );
   window.open(`https://wa.me/?text=${text}`, "_blank");
 }
 
 function shareTwitter() {
-  const url = getShareUrl();
+  const url = buildShareUrl(store.getSharePayload());
   const text = encodeURIComponent(
-    `My #FIFA2026 World Cup prediction: 🏆 ${championTeam.value?.name}! Make yours:`,
+    `My #WC2026 World Cup prediction: 🏆 ${championTeam.value?.name}! Make yours:`,
   );
   window.open(
     `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`,
@@ -355,17 +397,6 @@ function openInstagramStories() {
       "intent://#Intent;scheme=instagram;package=com.instagram.android;end";
   } else {
     window.location.href = "instagram://";
-  }
-}
-
-function confirmReset() {
-  if (
-    confirm(
-      "Are you sure you want to start over? All predictions will be lost.",
-    )
-  ) {
-    store.resetAll();
-    emit("reset");
   }
 }
 </script>

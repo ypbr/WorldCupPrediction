@@ -1,6 +1,6 @@
 import html2canvas from "html2canvas";
 
-const APP_URL = "https://fifawc2026.ypbr.dev/";
+const APP_URL = "https://wc2026.ypbr.dev/";
 
 /**
  * Returns true if the browser supports the Web Share API (basic check).
@@ -74,20 +74,20 @@ export async function shareStoryToInstagram(blob, championName) {
     const file = new File([blob], fileName, { type: "image/jpeg" });
 
     const shareText = championName
-        ? `🏆 My FIFA 2026 World Cup prediction: ${championName} wins it all!`
-        : "🏆 My FIFA 2026 World Cup prediction!";
+        ? `🏆 My World Cup 2026 prediction: ${championName} wins it all!`
+        : "🏆 My World Cup 2026 prediction!";
 
     if (canShareFiles()) {
         // Mobile browser supports file sharing
         await navigator.share({
             files: [file],
-            title: "FIFA 2026 Prediction",
+            title: "World Cup 2026 Prediction",
             text: `${shareText} Make yours at ${APP_URL}`,
         });
     } else if (canShare()) {
         // Mobile browser supports basic sharing but not files — share URL only
         await navigator.share({
-            title: "FIFA 2026 Prediction",
+            title: "World Cup 2026 Prediction",
             text: shareText,
             url: APP_URL,
         });

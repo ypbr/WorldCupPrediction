@@ -29,15 +29,16 @@ export function decodeState(encoded) {
     }
 }
 
+const APP_URL = 'https://wc2026.ypbr.dev/'
+
 /**
  * Build a shareable URL with the given encoded state.
+ * Always uses the production URL so native app shares generate correct links.
  * @param {string} encoded
  * @returns {string}
  */
 export function buildShareUrl(encoded) {
-    const url = new URL(window.location.href)
-    url.search = ''
-    url.hash = ''
+    const url = new URL(APP_URL)
     url.searchParams.set('p', encoded)
     return url.toString()
 }

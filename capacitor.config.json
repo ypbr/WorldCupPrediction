@@ -1,0 +1,16 @@
+{
+  "appId": "dev.ypbr.wc2026",
+  "appName": "WorldCup 2026 Predictor",
+  "webDir": "dist",
+  "android": {
+    "buildOptions": {
+      "keystorePath": null,
+      "keystoreAlias": null
+    }
+  },
+  "plugins": {
+    "Browser": {
+      "presentationStyle": "popover"
+    }
+  }
+}

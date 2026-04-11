@@ -3,7 +3,7 @@
     <!-- Group header -->
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-lg font-bold tracking-wide">
-        <span class="text-fifa-gold">Group {{ group }}</span>
+        <span class="text-wc-gold">Group {{ group }}</span>
       </h3>
       <span
         v-if="isComplete"
@@ -69,10 +69,10 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { usePredictionStore } from "@/stores/prediction.js";
-import { getGroupTeams } from "@/data/teams.js";
 import FlagImg from "@/components/FlagImg.vue";
+import { getGroupTeams } from "@/data/teams.js";
+import { usePredictionStore } from "@/stores/prediction.js";
+import { computed } from "vue";
 
 const props = defineProps({
   group: { type: String, required: true },

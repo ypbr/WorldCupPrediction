@@ -1,5 +1,5 @@
 /**
- * FIFA 2026 World Cup – Knockout bracket structure
+ * World Cup 2026 – Knockout bracket structure
  *
  * Round of 32 (R32): 16 matches (M73–M88)
  * Round of 16 (R16): 8 matches (M89–M96)
@@ -12,7 +12,7 @@
  *   "2B" = Group B runner-up
  *   "3ABCDF" = best 3rd-place team from among groups A,B,C,D,F
  *
- * Source: FIFA 2026 official regulations + Wikipedia bracket
+ * Source: 2026 official regulations + Wikipedia bracket
  */
 
 // Round of 32 matchups - pre-determined bracket
@@ -97,7 +97,7 @@ export const ROUNDS = [
 /**
  * 3rd place slot assignment lookup table.
  * When 8 specific groups produce 3rd-place qualifiers, they map to these R32 slots.
- * FIFA's 495-combination table, simplified to the slot constraints above.
+ * 495-combination table, simplified to the slot constraints above.
  * Key = sorted string of 8 qualifying groups (e.g., "ABCDEFGH")
  * For simplicity in the UI we let the user pick 8 of 12, then assign
  * them to bracket slots greedily (best 3rd-place → highest-priority slot).

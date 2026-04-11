@@ -27,7 +27,7 @@
       >
         <p class="font-semibold mb-1">📋 How it works</p>
         <p>
-          In FIFA 2026, the top 2 teams from each of the 12 groups automatically
+          In World Cup 2026, the top 2 teams from each of the 12 groups automatically
           qualify for the Round of 32. The best 8 third-place teams also
           advance. Select the 8 groups whose 3rd-place team you think will
           qualify.
@@ -119,7 +119,7 @@
           class="flex-1 py-4 rounded-2xl font-bold text-base transition-all duration-200 touch-manipulation"
           :class="
             selected.length === 8
-              ? 'bg-fifa-blue text-white hover:bg-blue-600 active:bg-blue-700 shadow-lg shadow-blue-900/40'
+              ? 'bg-wc-blue text-white hover:bg-blue-600 active:bg-blue-700 shadow-lg shadow-blue-900/40'
               : 'bg-white/10 text-gray-500 cursor-not-allowed'
           "
         >
@@ -132,10 +132,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import FlagImg from "@/components/FlagImg.vue";
 import { GROUPS, getGroupTeams } from "@/data/teams.js";
 import { usePredictionStore } from "@/stores/prediction.js";
-import FlagImg from "@/components/FlagImg.vue";
+import { ref } from "vue";
 
 const emit = defineEmits(["next", "back"]);
 const store = usePredictionStore();
